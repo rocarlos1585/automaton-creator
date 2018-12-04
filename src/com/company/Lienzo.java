@@ -11,32 +11,65 @@ public class Lienzo extends JPanel implements MouseListener {
     private Vector<Estado> vectorEstados;
     private Vector<Enlace> vectorEnlaces;
     private Point p1, p2;
+    private String nombreP1;
+    private String aceptacionP1;
+    private String nombreP2;
+    private String aceptacionP2;
+    private String cadenaEvaluar;
+
+
+
 
 
     public Lienzo(){
 
-        this.vectorEstados = new Vector<>();
-        this.vectorEnlaces = new Vector<>();
-        this.addMouseListener(this);
-    }
+            this.vectorEstados = new Vector<>();
+            this.vectorEnlaces = new Vector<>();
+            this.addMouseListener(this);
+        }
+
+
+
 
     @Override
     public void paint(Graphics g){
-        for(Estado estados : vectorEstados){
 
-            if (estados.getAceptacion().equals("yes") || estados.getAceptacion().equals("si") || estados.getAceptacion().equals("true")) {
-                estados.pintarAceptacion(g);
+            for(Estado estados : vectorEstados){
+
+                if (estados.getAceptacion().equals("yes") || estados.getAceptacion().equals("si") || estados.getAceptacion().equals("true")) {
+                    estados.pintarAceptacion(g);
+                }
+
+                else{
+                    estados.pintar(g);
+                }
             }
 
-            else{
-                estados.pintar(g);
-            }
-        }
-
-        for(Enlace enlace : vectorEnlaces){
-            enlace.pintar(g);
+            for(Enlace enlace : vectorEnlaces){
+                enlace.pintar(g);
         }
     }
+
+    public void comprobacion(String cadena){
+
+        String estadoActual;
+        String estadoSiguiente;
+        String aux;
+
+        for(Enlace enlace : vectorEnlaces){
+            estadoActual = enlace.getFrom();
+            estadoSiguiente = enlace.getTo();
+
+            for(int i=0; i<=cadena.length(); i++){
+
+
+
+            }
+
+        }
+
+    }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -49,17 +82,17 @@ public class Lienzo extends JPanel implements MouseListener {
 
                 if(respuesta==0){
 
-                    System.out.println("entro");
+                    cadenaEvaluar=JOptionPane.showInputDialog("ingrese la cadena que desea evaluar");
+                    comprobacion(cadenaEvaluar);
                 }
 
                 else{
 
-                    String salida = JOptionPane.showInputDialog("ingrese la salida");
-                    String simbolo = JOptionPane.showInputDialog("ingrese el simbolo");
-                    String llegada = JOptionPane.showInputDialog("ingrese la llegada");
+                    String nombre = JOptionPane.showInputDialog("ingrese el nombre del estado");
+
                     String aceptacion = JOptionPane.showInputDialog("es un estado de aceptacion?");
 
-                    this.vectorEstados.add(new Estado(e.getX(), e.getY(), salida, simbolo, llegada, aceptacion));
+                    this.vectorEstados.add(new Estado(e.getX(), e.getY(), nombre, aceptacion));
 
                     repaint();
 
@@ -68,12 +101,11 @@ public class Lienzo extends JPanel implements MouseListener {
             }
 
             else {
-                String salida = JOptionPane.showInputDialog("ingrese la salida");
-                String simbolo = JOptionPane.showInputDialog("ingrese el simbolo");
-                String llegada = JOptionPane.showInputDialog("ingrese la llegada");
+                String nombre = JOptionPane.showInputDialog("ingrese el nombre del estado");
+
                 String aceptacion = JOptionPane.showInputDialog("es un estado de aceptacion?");
 
-                this.vectorEstados.add(new Estado(e.getX(), e.getY(), salida, simbolo, llegada, aceptacion));
+                this.vectorEstados.add(new Estado(e.getX(), e.getY(), nombre, aceptacion));
 
                 repaint();
             }
@@ -83,14 +115,20 @@ public class Lienzo extends JPanel implements MouseListener {
             for(Estado estado : vectorEstados){
                 if(new Rectangle( estado.getCoordX() - Estado.radio/2, estado.getCoordY() - Estado.radio/2, Estado.radio, Estado.radio).contains(e.getPoint())){
                     if(p1==null){
+                        nombreP1=estado.getNombre();
+                        aceptacionP1=estado.getAceptacion();
                         p1 = new Point(estado.getCoordX(), estado.getCoordY());
                     }
                     else{
+                        nombreP2=estado.getNombre();
+                        aceptacionP2=estado.getAceptacion();
                         p2 = new Point(estado.getCoordX(), estado.getCoordY());
-                        this.vectorEnlaces.add(new Enlace(p1.x, p1.y, p2.x, p2.y));
+                        String simbolo = JOptionPane.showInputDialog("ingrese el caracter");
+                        this.vectorEnlaces.add(new Enlace(p1.x, p1.y, nombreP1, aceptacionP1, p2.x, p2.y, nombreP2, aceptacionP2, simbolo));
                         repaint();
                         p1=null;
                         p2=null;
+
                     }
                 }
             }
