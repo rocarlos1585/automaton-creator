@@ -16,6 +16,9 @@ public class Lienzo extends JPanel implements MouseListener {
     private String nombreP2;
     private String aceptacionP2;
     private String cadenaEvaluar;
+    private String Caracteres[];
+    private String Estados[];
+    private String Aceptacion[];
 
 
 
@@ -23,10 +26,10 @@ public class Lienzo extends JPanel implements MouseListener {
 
     public Lienzo(){
 
-            this.vectorEstados = new Vector<>();
-            this.vectorEnlaces = new Vector<>();
-            this.addMouseListener(this);
-        }
+        this.vectorEstados = new Vector<>();
+        this.vectorEnlaces = new Vector<>();
+        this.addMouseListener(this);
+    }
 
 
 
@@ -34,39 +37,57 @@ public class Lienzo extends JPanel implements MouseListener {
     @Override
     public void paint(Graphics g){
 
-            for(Estado estados : vectorEstados){
+        for(Estado estados : vectorEstados){
 
-                if (estados.getAceptacion().equals("yes") || estados.getAceptacion().equals("si") || estados.getAceptacion().equals("true")) {
-                    estados.pintarAceptacion(g);
-                }
-
-                else{
-                    estados.pintar(g);
-                }
+            if (estados.getAceptacion().equals("yes") || estados.getAceptacion().equals("si") || estados.getAceptacion().equals("true")) {
+                estados.pintarAceptacion(g);
             }
 
-            for(Enlace enlace : vectorEnlaces){
-                enlace.pintar(g);
+            else{
+                estados.pintar(g);
+            }
+        }
+
+        for(Enlace enlace : vectorEnlaces){
+            enlace.pintar(g);
         }
     }
 
-    public void comprobacion(String cadena){
+    public String comprobacion(String estado, String c){
 
-        String estadoActual;
-        String estadoSiguiente;
-        String aux;
+        for(Enlace enl : vectorEnlaces){
+            String e = enl.getFrom();
+            String sim = enl.getSimbolo();
+            String acp = enl.getAceptacionTo();
 
-        for(Enlace enlace : vectorEnlaces){
-            estadoActual = enlace.getFrom();
-            estadoSiguiente = enlace.getTo();
-
-            for(int i=0; i<=cadena.length(); i++){
-
-
-
+            if(e.equals(estado) && sim.equals(c)){
+                if(acp.equals("true")){
+                    return "La Palabra es Aceptada ";
+                }
+                return enl.getTo();
             }
+        }
+        return "La Palabra No es aceptada";
+
+    }
+
+    public void palabraEva(String palabra){
+        String estado = " ";
+        boolean ban = true;
+
+        for(int x = 0; x < palabra.length(); x++){
+            if(ban == true){
+                ban = false;
+                estado = vectorEstados.get(0).getNombre();
+            }
+            char c = palabra.charAt(x);
+            String c1 = Character.toString(c);
+
+            estado = comprobacion(estado, c1);
 
         }
+        //System.out.println(estado);
+        JOptionPane.showMessageDialog(this, estado);
 
     }
 
@@ -83,7 +104,7 @@ public class Lienzo extends JPanel implements MouseListener {
                 if(respuesta==0){
 
                     cadenaEvaluar=JOptionPane.showInputDialog("ingrese la cadena que desea evaluar");
-                    comprobacion(cadenaEvaluar);
+                    palabraEva(cadenaEvaluar);
                 }
 
                 else{
